@@ -41,3 +41,22 @@ Brent Picasso was able to [log wheel speeds, steering agnle, brake pressure via 
 * [Macchina M2](https://www.macchina.cc/catalog/m2-boards) - recommended by Yogesh Ojha as a cheap, open-source, modular interface
 * [CLX000](https://www.csselectronics.com/pages/can-bus-sniffer-reverse-engineering) - looks good for sniffing & logging, discriminator is visualisation
 * [PEAK CAN Interfaces](https://www.peak-system.com/PCAN-USB.199.0.html?L=1) - highly recommended by industry pros but expesive af
+
+## Interface
+
+2011 F150 OBD2 Port
+| Pin | Wire | Signal |
+|-----|------|--------|
+| 3 | Gry/Org | MS CAN + |
+| 4 | Blk | Logic Gnd |
+| 5 | Blk | Logic Gnd |
+| 6 | Wht/Blu | HS CAN + |
+| 11 | Vio/Org | MS CAN - |
+| 14 | Wht | HS CAN - |
+| 16 | Vio/Red | Power |
+
+PCM
+| Pin | Wire | Signal |
+|-----|------|--------|
+| 58 | Wht | HS CAN - |
+| 59 | Wht/Blu | HS CAN + |
