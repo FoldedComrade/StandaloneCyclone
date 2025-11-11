@@ -61,3 +61,11 @@ PCM
 |-----|------|--------|
 | 58 | Wht | HS CAN - |
 | 59 | Wht/Blu | HS CAN + |
+
+# CANPico Setup
+* Doing everything on Kali despite having little to no linux experience
+* [Solid guide on setting up vscode & micropython for the Pico](https://randomnerdtutorials.com/raspberry-pi-pico-vs-code-micropython/#micropico-install)
+* Readme in the CANPico/CANHack github has good instructions and includes a step-by-step on compiling toward the bottom
+ * canhack-master/CANPico/firmware/README.txt
+ * Step-by-step references v1.18, but should be v1.22.2 (since 2024-04-01) per notes at top of readme
+ * I was unable to build mpy-cross, [presumably](https://github.com/lvgl-micropython/lvgl_micropython/issues/436) because my GCC version is 15.2.0
