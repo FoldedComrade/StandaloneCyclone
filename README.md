@@ -35,6 +35,7 @@ Brent Picasso was able to [log wheel speeds, steering agnle, brake pressure via 
 
 ## Hardware
 * Purchased the [Canis CANPico from CopperHill](https://copperhilltech.com/canpico-v2-with-pico-wh-pre-installed/)
+*   [Pi Pico W Firmware](https://micropython.org/download/RPI_PICO_W/)
 * [Waveshare USB-CAN-B](https://www.waveshare.com/wiki/USB-CAN-B) offers two channels and good isolation, but forum posts indicate hit-or-miss functionality/setup
 * [CANable](https://openlightlabs.com/) looks good but seems perpetually out of stock
 * [USB2CAN]
