@@ -15,6 +15,7 @@ Donor Vehicle: 2011 F-150 (2WD)
 
 # Control
 * PCM flashed to delete PATS - couldn't for the life of me find any record online of someone figuring out a workaround
+* Doing all the CAN stuff on a Dell Latitude 5400 running Kali which I've come to learn may not have been a great decision, but we'll see how far it takes us
 
 Do-outs
 * Not sure the PCM is going to love not having O2 sensors
@@ -44,7 +45,6 @@ Brent Picasso was able to [log wheel speeds, steering agnle, brake pressure via 
 * [PEAK CAN Interfaces](https://www.peak-system.com/PCAN-USB.199.0.html?L=1) - highly recommended by industry pros but expesive af
 
 ## Interface
-
 2011 F150 OBD2 Port
 | Pin | Wire | Signal |
 |-----|------|--------|
@@ -62,10 +62,46 @@ PCM
 | 58 | Wht | HS CAN - |
 | 59 | Wht/Blu | HS CAN + |
 
-# CANPico Setup
-* Doing everything on Kali despite having little to no linux experience
+## CANPico
 * [Solid guide on setting up vscode & micropython for the Pico](https://randomnerdtutorials.com/raspberry-pi-pico-vs-code-micropython/#micropico-install)
-* Readme in the CANPico/CANHack github has good instructions and includes a step-by-step on compiling toward the bottom
+* Readme in the CANPico/CANHack github has good instructions and includes a step-by-step on compiling a **previous version** toward the bottom. Advise against not realizing you're looking at the previous release instructions and getting 90% of the way through that before realizing you're a fool.
 * canhack-master/CANPico/firmware/README.txt
-  * Step-by-step references v1.18, but should be v1.22.2 (since 2024-04-01) per notes at top of readme
-  * I was unable to build mpy-cross, [presumably](https://github.com/lvgl-micropython/lvgl_micropython/issues/436) because my GCC version is 15.2.0
+  * Had to downgrade GCC from 15.2.0 to 12 to build mpy-cross. Had the same issue as this [ticket](https://github.com/lvgl-micropython/lvgl_micropython/issues/436)
+```
+sudo apt install gcc-12
+sudo apt install g++-12
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10
+```
+  * Had to install gcc-arm-none-eabi for cmake to work (suppose it makes sense...gotta have the complier for the thing you're compiling for...)
+```
+sudo apt install gcc-arm-none-eabi
+```
+
+  * got some errors compiling...
+```
+/home/banjo/Documents/CANPico/micropython/ports/rp2/canis/rp2_can.c: In function 'rp2_can_make_new':
+/home/banjo/Documents/CANPico/micropython/ports/rp2/canis/rp2_can.c:132:5: error: unknown type name 'u_int'; did you mean 'uint'?
+  132 |     u_int tseg1 = args[4].u_int;
+      |     ^~~~~
+      |     uint
+/home/banjo/Documents/CANPico/micropython/ports/rp2/canis/rp2_can.c:133:5: error: unknown type name 'u_int'; did you mean 'uint'?
+  133 |     u_int tseg2 = args[5].u_int;
+      |     ^~~~~
+      |     uint
+/home/banjo/Documents/CANPico/micropython/ports/rp2/canis/rp2_can.c:134:5: error: unknown type name 'u_int'; did you mean 'uint'?
+  134 |     u_int sjw = args[6].u_int;
+      |     ^~~~~
+      |     uint
+make[3]: *** [CMakeFiles/firmware.dir/build.make:3440: CMakeFiles/firmware.dir/canis/rp2_can.c.obj] Error 1
+make[2]: *** [CMakeFiles/Makefile2:1893: CMakeFiles/firmware.dir/all] Error 2
+make[1]: *** [Makefile:91: all] Error 2
+-e See https://github.com/micropython/micropython/wiki/Build-Troubleshooting                                                                
+make: *** [Makefile:59: all] Error 1
+```
+  * Should probably revert GCC at some point...
+```
+sudo apt purge gcc-12 
+sudo apt autoremove --purge
+sudo rm /etc/apt/sources.list.d/zesty.list
+sudo ln -sf /usr/bin/gcc-15 /usr/bin/gcc
+```
