@@ -64,6 +64,9 @@ PCM
 
 ## CANPico
 * [Solid guide on setting up vscode & micropython for the Pico](https://randomnerdtutorials.com/raspberry-pi-pico-vs-code-micropython/#micropico-install)
+
+After two days trying to compile firmware I realized it is in fact I who am the fool, and the repo includes pre-compiled firmware.
+~
 * Readme in the CANPico/CANHack github has good instructions and includes a step-by-step on compiling a **previous version** toward the bottom. Advise against not realizing you're looking at the previous release instructions and getting 90% of the way through that before realizing you're a fool.
 * canhack-master/CANPico/firmware/README.txt
   * Had to downgrade GCC from 15.2.0 to 12 to build mpy-cross. Had the same issue as this [ticket](https://github.com/lvgl-micropython/lvgl_micropython/issues/436)
@@ -105,3 +108,4 @@ sudo apt autoremove --purge
 sudo rm /etc/apt/sources.list.d/zesty.list
 sudo ln -sf /usr/bin/gcc-15 /usr/bin/gcc
 ```
+~
