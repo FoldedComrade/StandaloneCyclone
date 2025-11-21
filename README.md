@@ -109,3 +109,34 @@ sudo rm /etc/apt/sources.list.d/zesty.list
 sudo ln -sf /usr/bin/gcc-15 /usr/bin/gcc
 ```
 ~
+## Ford Passive Anti-Theft System (PATS)
+### From the 2014 F-150 Workshop Manual (rev 10/25/2013)
+The Passive Anti-Theft System (PATS) is controlled by the Body Control Module (BCM). There are 2 main
+checks that PATS carries out before allowing the engine to start. If either of these checks fail, PATS does
+not allow the engine to start and STARTING SYSTEM FAULT is displayed in the message center. These
+two checks are the BCM verifying the PCM ID to make sure it matches the PCM ID stored in memory and to
+verify that a programmed key was used to turn the ignition to the RUN or START position.
+
+The first check is initiated by the BCM waking up the PCM by supplying voltage on the wake up control
+circuit. The BCM activates the wake up control circuit when:
+the driver door is opened.
+
+* a remote start request is received (if equipped with factory remote start).
+* the brake pedal is pressed.
+* a key is inserted into the ignition.
+* or when the ignition is in the RUN or START position.
+
+Once the PCM is awake, the BCM sends the PCM a challenge message over the High Speed Controller
+Area Network (HS-CAN). When the PCM receives the challenge message, it generates a response and
+sends it back to the BCM . If the response from the PCM does not match the response in the BCM memory,
+this first check fails and the engine will not start.
+
+Once the PCM ID has been verified, PATS performs the second check to make sure a programmed key is in
+the ignition. When the BCM determines the ignition has been turned to the RUN or START position, it
+generates a challenge message. It sends the challenge message to the PATS transceiver on the transmit
+(TX) circuit. The transceiver in turn reads the key and generates a response message that is sent back to
+the BCM on the receive (RX) circuit. If the message received from the transceiver does not match a key
+stored in the BCM memory, the engine will not start.
+
+If both the PCM ID and key verification pass, PATS is enabled and allows the engine to start. PATS cannot
+disable an engine that has already been started.
