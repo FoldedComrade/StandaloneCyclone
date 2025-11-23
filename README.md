@@ -65,50 +65,57 @@ PCM
 ## CANPico
 * [Solid guide on setting up vscode & micropython for the Pico](https://randomnerdtutorials.com/raspberry-pi-pico-vs-code-micropython/#micropico-install)
 
-After two days trying to compile firmware I realized it is in fact I who am the fool, and the repo includes pre-compiled firmware.
-~
-* Readme in the CANPico/CANHack github has good instructions and includes a step-by-step on compiling a **previous version** toward the bottom. Advise against not realizing you're looking at the previous release instructions and getting 90% of the way through that before realizing you're a fool.
-* canhack-master/CANPico/firmware/README.txt
-  * Had to downgrade GCC from 15.2.0 to 12 to build mpy-cross. Had the same issue as this [ticket](https://github.com/lvgl-micropython/lvgl_micropython/issues/436)
-```
-sudo apt install gcc-12
-sudo apt install g++-12
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 10
-```
-  * Had to install gcc-arm-none-eabi for cmake to work (suppose it makes sense...gotta have the complier for the thing you're compiling for...)
-```
-sudo apt install gcc-arm-none-eabi
-```
+After two days trying to compile firmware I realized it is in fact I who am the fool, and the repo includes pre-compiled firmware. Learning is fun.
 
-  * got some errors compiling...
+### Basics
+Following [Dr. Tindell's CANPico intro video](https://www.youtube.com/watch?v=MmRj8UEvXXM&t=1s)...\
+canpico.py seems to no longer be included in the CANPico github directory, found another guy who uploaded it).\
+Host setup...\
+Download min repo, start by changing to whatever directory you want to put it in\
+```$ git clone https://github.com/min-protocol/min.git```\
+move `canpcap.py` from min/ to min/host\
+```$ mv canpcap.py /host```\
+Canpico setup...\
 ```
-/home/banjo/Documents/CANPico/micropython/ports/rp2/canis/rp2_can.c: In function 'rp2_can_make_new':
-/home/banjo/Documents/CANPico/micropython/ports/rp2/canis/rp2_can.c:132:5: error: unknown type name 'u_int'; did you mean 'uint'?
-  132 |     u_int tseg1 = args[4].u_int;
-      |     ^~~~~
-      |     uint
-/home/banjo/Documents/CANPico/micropython/ports/rp2/canis/rp2_can.c:133:5: error: unknown type name 'u_int'; did you mean 'uint'?
-  133 |     u_int tseg2 = args[5].u_int;
-      |     ^~~~~
-      |     uint
-/home/banjo/Documents/CANPico/micropython/ports/rp2/canis/rp2_can.c:134:5: error: unknown type name 'u_int'; did you mean 'uint'?
-  134 |     u_int sjw = args[6].u_int;
-      |     ^~~~~
-      |     uint
-make[3]: *** [CMakeFiles/firmware.dir/build.make:3440: CMakeFiles/firmware.dir/canis/rp2_can.c.obj] Error 1
-make[2]: *** [CMakeFiles/Makefile2:1893: CMakeFiles/firmware.dir/all] Error 2
-make[1]: *** [Makefile:91: all] Error 2
--e See https://github.com/micropython/micropython/wiki/Build-Troubleshooting                                                                
-make: *** [Makefile:59: all] Error 1
+>>> from canpico import *
+>>> c = CAN()
+>>> cp = CANPico(c)
 ```
-  * Should probably revert GCC at some point...
+Create & transmit frames...
 ```
-sudo apt purge gcc-12 
-sudo apt autoremove --purge
-sudo rm /etc/apt/sources.list.d/zesty.list
-sudo ln -sf /usr/bin/gcc-15 /usr/bin/gcc
+>>> hello = CANFrame(CANID(0x123), data=b'hello')
+>>> world = CANFrame(CANID(0x124), data=b'world')
+>>> c.send_frames(hello, world)
 ```
-~
+Receive frames...\
+```>>> hello, world = c.recv()```\
+Print frames in buffer...
+```
+>>> hello
+CANFrame(CANID(id=5123), dlc=5, data=68656c6c6f, timestamp=3407821044
+>>> hello.get_data()
+b'hello'
+>>> world
+CANFrame(CANID(id=5124), dlc=5, data=776f726c64, timestamp=3407821220
+>>> world.get_data()
+b'world'
+```
+Monitor & print all frames for troubleshooting/low traffic only. Micropython takes a few ms to print frames and the buffer can pretty easily become saturated and start dropping frames.\
+```>>> cp.mon()```
+
+### Wireshark
+Summarize [Dr. Tindell's CANPico Wireshark video](https://www.youtube.com/watch?v=Yga9kKK_UjQ)\
+Bus monitor for high-traffic applications. Consists of client (CANPico) code/functions in `canpico.py` and host code `canpcap.py`. Client creates a min instance that receives a block of bytes instead of a list of CAN frame instances, then send to host using min over USB serial. Host waits for min handler and decodes bytes into pcapng format which wireshark can handle.\
+
+Client...\
+```>>> cp.minmon()```\
+Host...\
+```$ python3 canpcap.py -p /dev/ttyACM1 | wireshark -i -```
+
+## CANable
+I violated the field engineer's cardinal rule (always buy three - one to use, one to lose, one to steal) and only purchased one CANPico. Needed something for benchtesting and was in a hurry so picked up a CANable/[UCAN board off amazon]([https://www.amazon.com/FYSETC-STM32F072-Interface-Candlelight-Firmware-Pack](https://www.amazon.com/FYSETC-STM32F072-Interface-Candlelight-Firmware-Pack/dp/B0BPY5HY6C/ref=sr_1_3).
+* [CANable Getting Started Guide](https://canable.io/getting-started.html)
+* 
 ## Ford Passive Anti-Theft System (PATS)
 ### From the 2014 F-150 Workshop Manual (rev 10/25/2013)
 The Passive Anti-Theft System (PATS) is controlled by the Body Control Module (BCM). There are 2 main
