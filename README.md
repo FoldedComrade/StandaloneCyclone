@@ -2,6 +2,7 @@
 Trying to run a Fod Cyclone Duratec 37 and 6R80 transmission on the OEM PCM and no other modules. Working project.
 
 # Powertrain
+* [Powertrain notes](https://github.com/FoldedComrade/StandaloneCyclone/blob/main/Powertrain/Powertrain.md)
 Donor Vehicle: 2011 F-150 (2WD)
 ~160k miles
 * Note the Duratec 37 out of any transverse-mounted application has an internal water pump known for failing and dumping all the coolant into the block. Wild design choice.
@@ -23,6 +24,10 @@ Do-outs
 * Not sure the PCM is going to love that the final drive ratio is wildly different than what it's programmed for
 
 ## References
+### Ford
+* [Operation Charm](https://charm.li/Ford/2011/F%20150%202WD%20V6-3.7L/Repair%20and%20Diagnosis/) is fucking incredible - factory manual, free & public, no ads, easy to navigate.
+* 
+### CAN
 Dr. Ken Tindell seems to be the CAN godfather
 * [Canis Labs](https://canislabs.com/)
 * [Personal Blog](https://kentindell.github.io/)
@@ -33,6 +38,9 @@ Yogesh Ojha has a helpful getting started 101
 * [Part 3](https://medium.com/@yogeshojha/car-hacking-101-practical-guide-to-exploiting-can-bus-using-instrument-cluster-simulator-part-ea40c05c49cd)
 
 Brent Picasso was able to [log wheel speeds, steering agnle, brake pressure via CAN](https://www.autosportlabs.com/reverse-engineering-ford-mustang-2011-2014-can-bus-steering-angle-throttle-position-brake-pressure-and-wheel-speeds/)
+
+Ford
+* Service Manual CANBus starts at pg 6020
 
 ## Hardware
 * Purchased the [Canis CANPico from CopperHill](https://copperhilltech.com/canpico-v2-with-pico-wh-pre-installed/)
@@ -56,11 +64,31 @@ Brent Picasso was able to [log wheel speeds, steering agnle, brake pressure via 
 | 14 | Wht | HS CAN - |
 | 16 | Vio/Red | Power |
 
-PCM
+### 2011 F150 PCM Interface
+PCM has three connectors - C175 E/B/T
+
+[C175B](https://charm.li/Ford/2011/F%20150%202WD%20V6-3.7L/Repair%20and%20Diagnosis/Diagrams/Connector%20Views/Engine%20Control%20Module/C175B%20Powertrain%20Control%20Module%20%28PCM%29/) is the Body/Cowl connector
 | Pin | Wire | Signal |
 |-----|------|--------|
-| 58 | Wht | HS CAN - |
-| 59 | Wht/Blu | HS CAN + |
+| 58 | WHT | HS CAN - |
+| 59 | WHT/BLU | HS CAN + |
+| 62 | YEL/RD | KAPWR |
+| 67 | YEL/GRY |  VPWR1 |
+| 68 | YEL/GRY |  VPWR2 |
+| 69 | BLK/YEL |  PWRGND |
+| 70 | BLK/YEL |  PWRGND |
+
+* VPWR (Vehicle Power is the primary source of PCM power. VPWR is switched through the PCM power relay and is controlled by the ignition switch
+* PWRGND (Power Ground) circuit(s) is connected directly to the battery negative (B-) terminal. PWRGND provides a return path for the PCM vehicle power (VPWR) circuits
+* KAPWR (Keep Alive Power) provides a constant voltage input independent of ignition switch state to the PCM. This voltage is used by the PCM to maintain the KAM.
+* ~~VBPWR (Vehicle Buffered Power) is a regulated voltage supplied by the PCM to vehicle sensors. These sensors require a constant 12 volts for operation and cannot withstand VPWR voltage variations. VBPWR is regulated to VPWR minus 1.5 volts and is also current limited to protect the sensors.~~
+     * Not actually sure which one this is at the moment....
+* VREF (Vehicle Reference Voltage) is a consistent positive voltage (5 volts plus or minus 0.5 volt) provided by the PCM. VREF is typically used by 3-wire sensors and some digital input signals.
+     * This might be what the Ford wiring manual refers to as ```C REF``` or ```C-REF``` (C175B-52). Further research required...
+
+[C175E](https://charm.li/Ford/2011/F%20150%202WD%20V6-3.7L/Repair%20and%20Diagnosis/Diagrams/Connector%20Views/Engine%20Control%20Module/C175E%20Powertrain%20Control%20Module%20%28PCM%29/) is the Engine connector
+
+[C175T](https://charm.li/Ford/2011/F%20150%202WD%20V6-3.7L/Repair%20and%20Diagnosis/Diagrams/Connector%20Views/Engine%20Control%20Module/C175T%20Powertrain%20Control%20Module%20%28PCM%29/) is the Trans connector
 
 ## CANPico
 * [Solid guide on setting up vscode & micropython for the Pico](https://randomnerdtutorials.com/raspberry-pi-pico-vs-code-micropython/#micropico-install)
