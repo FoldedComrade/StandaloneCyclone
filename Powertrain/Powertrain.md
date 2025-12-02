@@ -1,8 +1,10 @@
 #To Do
-* Review here: https://www.msextra.com/forums/viewtopic.php?t=58522&sid=ca48f336f1902cf77b8cb5a48ad65bdc
+* Review here: 
 
 #Ref
 * [Charm.li - Powertrain Management](https://charm.li/Ford/2011/F%20150%202WD%20V6-3.7L/Repair%20and%20Diagnosis/#Powertrain%20Management/)
+* [Some dude managed to get the pre-2011 6R80 working standalone w/ an arduino & CAN messages](https://www.msextra.com/forums/viewtopic.php?t=58522&sid=ca48f336f1902cf77b8cb5a48ad65bdc)
+* [V sus US Shift Quick 6 Controller from shady website](https://gogobuy.shop/product/2729059419/?cid=e1e029604b270e32d4575283e2b734d5)
 # Powertrain Control Module
 ## Vehicle Speed Output
 Powertrain Control Module - Vehicle Speed Output (PCM-VSO)
