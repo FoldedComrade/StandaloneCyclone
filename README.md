@@ -42,6 +42,7 @@ Brent Picasso was able to [log wheel speeds, steering agnle, brake pressure via 
 Ford
 * Service Manual CANBus starts at pg 6020
 * CAN Message Chart on pg 6031
+* Diagnostic PID Chart on service manual 307-01 pg 3319
 
 ## Hardware
 * Purchased the [Canis CANPico from CopperHill](https://copperhilltech.com/canpico-v2-with-pico-wh-pre-installed/)
